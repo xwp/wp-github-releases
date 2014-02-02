@@ -1,4 +1,4 @@
-=== GitHub Release Update ===
+=== GitHub Releases ===
 Contributors:      X-team, shadyvb
 Tags:              github, updates, release, webhook
 Requires at least: 3.6
