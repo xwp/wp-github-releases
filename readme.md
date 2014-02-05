@@ -32,3 +32,7 @@ and either
 3. visit /wp-admin/admin-ajax.php?action=github-releases-authenticate so you can 
 authenticate to your GitHub application you just did
 
+4. Create a directory right beside DOCUMENT_ROOT named github-releases, as that's
+where the plugin will save zip files ( or filter github-releases-directory for 
+an alternative location )
+

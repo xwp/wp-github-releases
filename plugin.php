@@ -93,13 +93,38 @@ class X_GitHub_Releases {
 		$file = $this->api( $download_link, 'GET', array( 'download' => true ) );
 
 		// Store locally
-		$filename = sanitize_title_with_dashes( $release->name ) . '_' . substr( md5( time() ), 0, 10 ) . '.zip';
+		$filename = sanitize_title_with_dashes( $name ) . '_' . $tag . '.zip';
 		$path = apply_filters( 'github-releases-directory', getenv( 'DOCUMENT_ROOT' ) . '/../github-releases/' );
 		$filename = $path . $filename;
 		file_put_contents( $filename, $file );
 		add_post_meta( $post_id, 'zipball', $filename );
 
+		// Rename the folder within, assumes the prefix of `wp-`
+		$this->rename_zip_root( $filename, str_replace( 'wp-', '', $name ) );
+
 		die( 'Got it!' );
+	}
+
+	/**
+	 * Rename the root folder inside a zip file
+	 *
+	 * Assumes the following:
+	 * - There is always a single root folder
+	 * 
+	 * @param  string $filename      Path of the zip file
+	 * @param  string $new_root_name New name for the root folder
+	 * @return void
+	 */
+	function rename_zip_root( $filename, $new_root_name ) {
+		$zip = new ZipArchive();
+		$r = $zip->open( $filename );
+		$info = $zip->statIndex( 0 );
+		$name = $info['name'];
+		$newname = $new_root_name . '/';
+		for ( $i = 0; $i < $zip->numFiles; $i++ ) {
+			$zip->renameIndex( $i, str_replace( $name, $newname, $zip->getNameIndex( $i ) ) );
+		}
+		$zip->close();
 	}
 
 	function sample() {
