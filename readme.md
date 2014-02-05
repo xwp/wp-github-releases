@@ -21,7 +21,14 @@ Receive updates from a GitHub repo, cache zips of new releases
 
 ## Installation ##
 
-After plugin installation, edit github-releases-config-sample.php and either 
+1. Create a new GitHub Application from: 
+https://github.com/settings/applications/new
+
+2. Fill github-releases-config-sample.php with the new application info, 
+and either 
 - copy it to mu-plugins
 - copy the code within to your theme/plugin, and make sure it gets included
+
+3. visit /wp-admin/admin-ajax.php?action=github-releases-authenticate so you can 
+authenticate to your GitHub application you just did
 
