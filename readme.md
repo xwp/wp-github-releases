@@ -14,7 +14,7 @@ Receive updates from a GitHub repo, cache zips of new releases
 
 Receive updates from a GitHub repo, cache zips of new releases
 
-[![Build Status](.png?branch=master)]()
+[![Build Status](https://travis-ci.org/x-team/wp-github-releases.png?branch=master)](https://travis-ci.org/x-team/wp-github-releases)
 
 ## Changelog ##
 
