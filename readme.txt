@@ -14,3 +14,9 @@ Receive updates from a GitHub repo, cache zips of new releases
 
 == Changelog ==
 
+
+== Installation ==
+
+After plugin installation, edit github-releases-config-sample.php and either 
+- copy it to mu-plugins
+- copy the code within to your theme/plugin, and make sure it gets included
