@@ -24,7 +24,7 @@ class X_GitHub_Releases {
 	}
 
 	function webhook() {
-		$_POST = $this->sample();
+		$_POST = apply_filter( 'github-releases-webhook-data', $_POST );
 		$payload = json_decode( $_POST['payload'] );
 
 		// Accept only tag / release calls
@@ -128,10 +128,6 @@ class X_GitHub_Releases {
 			$zip->renameIndex( $i, str_replace( $name, $newname, $zip->getNameIndex( $i ) ) );
 		}
 		$zip->close();
-	}
-
-	function sample() {
-		return wp_parse_args( urldecode( 'payload=%7B%22ref%22%3A%22refs%2Ftags%2F1.2%22%2C%22after%22%3A%2297bfb5e9eb928c28d4e9f79c485ae389c3d95803%22%2C%22before%22%3A%220000000000000000000000000000000000000000%22%2C%22created%22%3Atrue%2C%22deleted%22%3Afalse%2C%22forced%22%3Atrue%2C%22base_ref%22%3A%22refs%2Fheads%2Fmaster%22%2C%22compare%22%3A%22https%3A%2F%2Fgithub.com%2Fshadyvb%2Ftest%2Fcompare%2F1.2%22%2C%22commits%22%3A%5B%5D%2C%22head_commit%22%3A%7B%22id%22%3A%2297bfb5e9eb928c28d4e9f79c485ae389c3d95803%22%2C%22distinct%22%3Atrue%2C%22message%22%3A%22Update+README.md%22%2C%22timestamp%22%3A%222014-02-03T19%3A43%3A50-08%3A00%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fshadyvb%2Ftest%2Fcommit%2F97bfb5e9eb928c28d4e9f79c485ae389c3d95803%22%2C%22author%22%3A%7B%22name%22%3A%22Shady+Sharaf%22%2C%22email%22%3A%22shady%40sharaf.me%22%2C%22username%22%3A%22shadyvb%22%7D%2C%22committer%22%3A%7B%22name%22%3A%22Shady+Sharaf%22%2C%22email%22%3A%22shady%40sharaf.me%22%2C%22username%22%3A%22shadyvb%22%7D%2C%22added%22%3A%5B%5D%2C%22removed%22%3A%5B%5D%2C%22modified%22%3A%5B%22README.md%22%5D%7D%2C%22repository%22%3A%7B%22id%22%3A14350099%2C%22name%22%3A%22test%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fshadyvb%2Ftest%22%2C%22description%22%3A%22Test%22%2C%22watchers%22%3A0%2C%22stargazers%22%3A0%2C%22forks%22%3A0%2C%22fork%22%3Afalse%2C%22size%22%3A128%2C%22owner%22%3A%7B%22name%22%3A%22shadyvb%22%2C%22email%22%3A%22shady%40sharaf.me%22%7D%2C%22private%22%3Afalse%2C%22open_issues%22%3A0%2C%22has_issues%22%3Atrue%2C%22has_downloads%22%3Atrue%2C%22has_wiki%22%3Atrue%2C%22created_at%22%3A1384304941%2C%22pushed_at%22%3A1391485452%2C%22master_branch%22%3A%22master%22%7D%2C%22pusher%22%3A%7B%22name%22%3A%22shadyvb%22%2C%22email%22%3A%22shady%40sharaf.me%22%7D%7D' ) );
 	}
 
 	function authenticate() {
