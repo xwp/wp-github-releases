@@ -17,15 +17,23 @@ class X_GitHub_Releases {
 	function __construct() {
 		// Webhook handlers
 		add_action( 'wp_ajax_nopriv_github-releases', array( $this, 'webhook' ) );
-		add_action( 'wp_ajax_github-releases', array( $this, 'webhook' ) ); // only for debugging
+		add_action( 'wp_ajax_github-releases', array( $this, 'webhook' ) ); # DEBUG
 
 		// GitHub Authentication
 		add_action( 'wp_ajax_github-releases-authenticate', array( $this, 'authenticate' ) );
 		add_action( 'wp_ajax_github-releases-token', array( $this, 'token' ) );
+
+		// Plugin update server
+		add_action( 'wp_ajax_nopriv_github-releases-update', array( $this, 'update' ) );
+		add_action( 'wp_ajax_nopriv_github-releases-info', array( $this, 'info' ) );
+		add_action( 'wp_ajax_nopriv_github-releases-download', array( $this, 'download' ) );
+		add_action( 'wp_ajax_github-releases-update', array( $this, 'update' ) ); # DEBUG
+		add_action( 'wp_ajax_github-releases-info', array( $this, 'info' ) );  # DEBUG
+		add_action( 'wp_ajax_github-releases-download', array( $this, 'download' ) );  # DEBUG
 	}
 
 	function webhook() {
-		$posted  = apply_filter( 'github-releases-webhook-data', $_POST );
+		$posted  = apply_filters( 'github-releases-webhook-data', $_POST );
 		$payload = json_decode( $posted['payload'] );
 
 		// Accept only tag / release calls
@@ -200,6 +208,95 @@ class X_GitHub_Releases {
 			$body = json_decode( $body );
 		}
 		return $body;
+	}
+
+	public function update() {
+		$posted = apply_filters( 'github-releases-update', $_REQUEST );
+
+		if ( $posted == false ) {
+			wp_send_json_error();
+		}
+
+		$plugins = $posted['plugins'];
+		$info    = array();
+
+		foreach ( $plugins as $plugin_filename => $version ) {
+			$slug = preg_match( '#([a-z\-]+).php#', $plugin_filename, $match ) ? $match[1] : null;
+			$repo = "wp_$slug"; // This depends on repos having a wp_ prefix
+
+			$posts = get_posts(
+				array(
+					'post_type' => 'github-release',
+					'meta_query' => array(
+						array( 'key' => 'repo', 'value' => $repo ),
+					),
+					'post_status' => 'any',
+					'order' => 'desc',
+					'posts_per_page' => 1,
+				)
+			);
+
+			if ( empty( $posts ) ) {
+				continue;
+			}
+
+			$release      = $posts[0];
+			$new_version  = $release->tag;
+
+			if ( version_compare( $version, $new_version ) >= 0 ) {
+				continue;
+			}
+
+			$info[ $plugin_filename ] = array(
+				'slug' => $slug,
+				'new_version' => $new_version,
+				'url' => apply_filters( 'github-releases-plugin-url', site_url( "plugins/$slug" ), $slug ),
+				// Add license and manipulate URL as needed
+				'package' => apply_filters( 'github-releases-plugin-download-url', site_url( "plugins/$slug/download" ), $slug )
+			);
+		}
+
+		wp_send_json( $info );
+	}
+
+	public function download() {
+		$slug = filter_input( INPUT_GET, 'slug' );
+
+		// License checks and pre-download checks
+		if ( ! apply_filters( 'github-releases-download', true, $slug, $_GET ) ) {
+			die; // Do not send a single byte!
+		}
+
+		$repo = "wp_$slug";
+
+		$posts = get_posts(
+			array(
+				'post_type' => 'github-release',
+				'meta_query' => array(
+					// This depends on repos having a wp_ prefix
+					array( 'key' => 'repo', 'value' => $repo ),
+				),
+				'post_status' => 'any',
+				'order' => 'desc',
+				'posts_per_page' => 1,
+			)
+		);
+
+		if ( empty( $posts ) ) {
+			die;
+		}
+
+		$release = $posts[0];
+		$filename = realpath( $release->zipball );
+
+		if ( ! $filename || ! file_exists( $filename ) ) {
+			die;
+		}
+
+		header( 'Content-type: application/zip' );
+		header( "Content-Disposition: attachment; filename=$filename" );
+		echo file_get_contents( $filename ); // xss okay
+		die;
 	}
 
 }
