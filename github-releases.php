@@ -25,8 +25,8 @@ class X_GitHub_Releases {
 	}
 
 	function webhook() {
-		$_POST = apply_filter( 'github-releases-webhook-data', $_POST );
-		$payload = json_decode( $_POST['payload'] );
+		$posted  = apply_filter( 'github-releases-webhook-data', $_POST );
+		$payload = json_decode( $posted['payload'] );
 
 		// Accept only tag / release calls
 		if ( preg_match( '#refs/tags/(.*)#', $payload->ref, $match ) <= 0 ) {
