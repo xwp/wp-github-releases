@@ -95,6 +95,9 @@ class X_GitHub_Releases {
 		// Store locally
 		$filename = sanitize_title_with_dashes( $name ) . '_' . $tag . '.zip';
 		$path = apply_filters( 'github-releases-directory', getenv( 'DOCUMENT_ROOT' ) . '/../github-releases/' );
+
+		// TODO: Check if folder is writable
+
 		$filename = $path . $filename;
 		file_put_contents( $filename, $file );
 		add_post_meta( $post_id, 'zipball', $filename );
