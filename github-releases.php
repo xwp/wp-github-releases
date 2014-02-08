@@ -15,12 +15,13 @@ class X_GitHub_Releases {
 	public $repo, $owner, $token;
 
 	function __construct() {
+		// Webhook handlers
 		add_action( 'wp_ajax_nopriv_github-releases', array( $this, 'webhook' ) );
 		add_action( 'wp_ajax_github-releases', array( $this, 'webhook' ) ); // only for debugging
 
+		// GitHub Authentication
 		add_action( 'wp_ajax_github-releases-authenticate', array( $this, 'authenticate' ) );
 		add_action( 'wp_ajax_github-releases-token', array( $this, 'token' ) );
-		add_action( 'wp_ajax_github-releases-store', array( $this, 'store' ) );
 	}
 
 	function webhook() {
