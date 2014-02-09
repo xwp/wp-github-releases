@@ -122,7 +122,7 @@ class X_GitHub_Releases {
 	 *
 	 * Assumes the following:
 	 * - There is always a single root folder
-	 * 
+	 *
 	 * @param  string $filename      Path of the zip file
 	 * @param  string $new_root_name New name for the root folder
 	 * @return void
@@ -222,7 +222,7 @@ class X_GitHub_Releases {
 
 		foreach ( $plugins as $plugin_filename => $version ) {
 			$slug = preg_match( '#([a-z\-]+).php#', $plugin_filename, $match ) ? $match[1] : null;
-			$repo = "wp_$slug"; // This depends on repos having a wp_ prefix
+			$repo = "wp-$slug"; // This depends on repos having a wp- prefix
 
 			$posts = get_posts(
 				array(
