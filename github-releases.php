@@ -267,7 +267,7 @@ class X_GitHub_Releases {
 			die; // Do not send a single byte!
 		}
 
-		$repo = "wp_$slug";
+		$repo = "wp-$slug";
 
 		$posts = get_posts(
 			array(
