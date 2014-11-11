@@ -1,5 +1,5 @@
 === GitHub Releases ===
-Contributors:      X-team, shadyvb
+Contributors:      xwp, shadyvb
 Tags:              github, updates, release, webhook
 Requires at least: 3.6
 Stable tag:        trunk

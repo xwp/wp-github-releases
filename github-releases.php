@@ -4,8 +4,8 @@
  * Plugin URI: http://wordpress.org/plugins/github-releases/
  * Description:
  * Version: 0.2
- * Author: X-Team
- * Author URI: http://x-team.com/wordpress/
+ * Author: XWP
+ * Author URI: https://xwp.co/
  * License: GPLv2+
  */
 class X_GitHub_Releases {
